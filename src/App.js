@@ -6,7 +6,6 @@ import Login from './pages/Login/Login';
 function App() {
   return (
     <Router>
-      {/* 路由配置 */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />

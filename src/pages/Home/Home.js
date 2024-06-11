@@ -1,46 +1,21 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './index.css';
-import AddItemModal from '../../comps/AddItemModal';
+
+import BaiduMap from '../../comps/bd-map/MapComp';
+import MapApiLoaderHOC from '../../comps/msg-scroll/MsgScrollComp';
 
 const Home = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [isOpen, setIsOpen] = useState(false);
-  const items = [
-    // 这里是你的数据，包括图片URL和描述
-    { img: '', desc: 'Description 1' },
-    { img: '', desc: 'Description 2' },
-    // 添加更多...
-  ];
-
-  const toggleModal = () => {
-    setIsOpen(!isOpen);
+  const center = {
+    longitude: 116.404,
+    latitude: 39.915,
   };
-
+  const zoom = 15;
   return (
-    <div className="home-container">
-      <div className="search-bar">
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Search..."
-        />
+    <div className="">
+      <BaiduMap ak="OVgMJWD3i5EulKzpwYMdinhVu33BX91v" center={center} zoom={zoom} />
+      <div className='msg-box'>
+        <MapApiLoaderHOC/>
       </div>
-      <div className="home-grid">
-        {items
-          .filter((item) =>
-            item.desc.toLowerCase().includes(searchTerm.toLowerCase())
-          )
-          .map((item, index) => (
-            <div key={index} className="home-grid-item">
-              <img src={item.img} alt={item.desc} />
-              <p>{item.desc}</p>
-            </div>
-          ))}
-      </div>
-      {/* 添加一个加号悬浮按钮 */}
-      <div className="floating-button" onClick={toggleModal}>+</div>
-      <AddItemModal isOpen={isOpen} onClose={toggleModal} />
     </div>
   );
 };
