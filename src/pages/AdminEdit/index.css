@@ -1,0 +1,33 @@
+.main-box {
+  display: flex;
+  flex-direction: column;
+}
+.edit-form {
+  display: grid;
+  gap: 1rem; /* 控制网格项目之间的间距 */
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* 自适应列宽 */
+}
+
+.grid-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem; /* 控制标签与输入框间的间距 */
+  margin-bottom: 10px;
+}
+
+.contact-group,
+.company-group {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.submit-group {
+  justify-content: center; /* 使按钮居中 */
+}
+
+/* 根据需要添加其他样式，如字体大小、颜色、边框等 */

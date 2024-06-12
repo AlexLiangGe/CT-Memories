@@ -25,6 +25,7 @@ const Login = () => {
       } else if (!userList.some(user => user.password === password)) {
         alert('Password is incorrect!');
       } else if (userList.some(user => user.email === email && user.password === password)) {
+        localStorage.setItem('isLogin', 'true')
         alert('Login successful!');
         navigate("/");
       } else {
@@ -39,6 +40,7 @@ const Login = () => {
         userList.push({ username, password, email });
         localStorage.setItem('userList', JSON.stringify(userList));
         alert('Registration successful!');
+        toggleMode();
       }
     }
   };

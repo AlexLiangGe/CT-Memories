@@ -1,13 +1,18 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./index.css";
 
-const BaiduMap = ({ ak, center, zoom }) => {
+const Admin = () => {
   const navigate = useNavigate();
-  const { BMap } = window;
-  const mapContainerRef = useRef(null);
-  let map = null;
+
   const [cornellTechGraduates, setCornellTechGraduates] = useState([]);
+  const [searchValue, setSearchValue] = useState("");
+
+  const handleSearchChange = (event) => {
+    const value = event.target.value.toLowerCase();
+    setSearchValue(value);
+  };
+
   useEffect(() => {
     // 判断isLogin状态
     const isLogin = localStorage.getItem("isLogin") === "true";
@@ -15,7 +20,7 @@ const BaiduMap = ({ ak, center, zoom }) => {
       navigate("/login"); // 如果未登录，跳转至登录页面
       return; // 确保后续代码不执行
     }
-
+    
     const storedData = localStorage.getItem("cornellTechGraduates");
     if (storedData) {
       setCornellTechGraduates(JSON.parse(storedData));
@@ -146,116 +151,90 @@ const BaiduMap = ({ ak, center, zoom }) => {
       setCornellTechGraduates(initData);
     }
   }, []);
-  const initializeMap = () => {
-    map = new BMap.Map(mapContainerRef.current);
-    const point = new BMap.Point(center.longitude, center.latitude);
-    map.centerAndZoom(point, zoom);
-    var navigationControl = new BMap.NavigationControl();
-    map.addControl(navigationControl);
-    map.enableScrollWheelZoom();
 
-    function MyCustomOverlay(point, imageUrl, data) {
-      this._point = point;
-      this._imageUrl = imageUrl;
-      this._userData = data;
-      BMap.Overlay.call(this);
-    }
-
-    MyCustomOverlay.prototype = new BMap.Overlay();
-    MyCustomOverlay.prototype.initialize = function (map) {
-      var div = document.createElement("div");
-      div.style.position = "absolute";
-      var img = document.createElement("img");
-      img.src = this._imageUrl;
-      img.style.width = "48px";
-      img.style.height = "48px";
-      img.style.border = "2px solid #fff";
-      img.style.borderRadius = "50%";
-      img.className = "animate__animated animate__bounceIn";
-      img.addEventListener("click", (e) => {
-        console.log(this._userData);
-        const modal = document.getElementById("myModal");
-        const avatar = document.querySelector(".avatar");
-        const name = document.querySelector(".profile-name");
-        const major = document.querySelector(".major");
-        const contact = document.querySelector(".contact");
-        const phoneNumber = document.querySelector(".phone-number");
-        const destinationCity = document.querySelector(".destination-city");
-        const companyName = document.querySelector(".company-name");
-
-        // 填充数据
-        avatar.src = this._userData.avatar; // 假设avatar字段是图片URL
-        name.textContent = this._userData.name;
-        major.textContent = `Major: ${this._userData.major}`;
-        contact.textContent = `Contact: ${this._userData.contact}`;
-        phoneNumber.textContent = `Phone Number: ${this._userData.phoneNumber}`;
-        destinationCity.textContent = `Destination City: ${this._userData.destinationCity}`;
-        companyName.textContent = `Company Name: ${this._userData.companyName}`;
-
-        modal.style.display = "block";
-
-        // 添加点击事件监听器以在点击关闭按钮时隐藏模态对话框
-        const span = document.getElementsByClassName("close")[0];
-        span.onclick = function () {
-          modal.style.display = "none";
-        };
-
-        // 当用户点击模态对话框以外的地方时也关闭它
-        window.onclick = function (event) {
-          if (event.target === modal) {
-            modal.style.display = "none";
-          }
-        };
-      });
-      div.appendChild(img);
-      map.getPanes().markerPane.appendChild(div);
-      this._div = div;
-      return div;
-    };
-
-    MyCustomOverlay.prototype.draw = function () {
-      var pixel = map.pointToOverlayPixel(this._point);
-      this._div.style.left = pixel.x - 32 + "px";
-      this._div.style.top = pixel.y - 32 + "px";
-    };
-
-    cornellTechGraduates.forEach((item, index) => {
-      var point = new BMap.Point(item.companyLongitude, item.companyLatitude);
-      var overlay = new MyCustomOverlay(point, item.avatar, item);
-      map.addOverlay(overlay);
-    });
+  const handleEdit = (graduate) => {
+    console.log(`Editing: ${graduate.name}`);
+    // 实现编辑逻辑
+    navigate(`/edit/${graduate.id}`, { state: { graduate } });
   };
 
-  useEffect(() => {
-    if (mapContainerRef.current) {
-      initializeMap();
-    }
-  });
+  const handleDelete = (graduate) => {
+    // 实现删除逻辑
+    const newData = [...cornellTechGraduates];
+    const index = newData.findIndex((g) => g.id === graduate.id);
+    newData.splice(index, 1);
+    setCornellTechGraduates(newData);
+    localStorage.setItem("cornellTechGraduates", JSON.stringify(newData));
+  };
 
   return (
-    <div>
-      <div
-        ref={mapContainerRef}
-        style={{ width: "100%", height: "100vh", margin: "0 auto" }}
-      />
-      <div id="myModal" className="modal animate__animated animate__fadeIn">
-        <div className="modal-content">
-          <span className="close">&times;</span>
-          <div className="profile-card">
-            <img className="avatar" src="" alt="Avatar" />
-            <div className="profile-info">
-              <h3 className="profile-name"> </h3>
-              <p className="major"></p>
-              <p className="contact"></p>
-              <p className="phone-number"></p>
-              <p className="destination-city"></p>
-              <p className="company-name"></p>
-            </div>
-          </div>
-        </div>
+    <div className="main-box">
+      <div className="title-box">
+        <a href="/">&larr; Back</a>
+        <div className="title">Cornell Tech Graduates</div>
+        <div></div>
       </div>
+
+      <div className="search-box">
+        <input type="text" placeholder="Search" onChange={handleSearchChange} />
+        <button className="add-btn" onClick={() => navigate("/add")}>
+          Add
+        </button>
+      </div>
+      <table className="graduates-table">
+        <thead>
+          <tr>
+            <th>Avatar</th>
+            <th>Name</th>
+            <th>Major</th>
+            <th>Contact</th>
+            <th>PhoneNumber</th>
+            <th>DestinationCity</th>
+            <th>CompanyName</th>
+            <th>CompanyPosition</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {cornellTechGraduates
+            .filter((graduate) =>
+              graduate.name.toLowerCase().includes(searchValue)
+            )
+            .map((graduate, index) => (
+              <tr key={index}>
+                <td>
+                  <img
+                    className="avatar"
+                    src={graduate.avatar}
+                    alt={graduate.name}
+                  />
+                </td>
+                <td>{graduate.name}</td>
+                <td>{graduate.major}</td>
+                <td>{graduate.contact}</td>
+                <td>{graduate.phoneNumber}</td>
+                <td>{graduate.destinationCity}</td>
+                <td>{graduate.companyName}</td>
+                <td>
+                  {graduate.companyLongitude},{graduate.companyLatitude}
+                </td>
+                <td>
+                  <div className="ctrl-col">
+                    <button onClick={() => handleEdit(graduate)}>Edit</button>
+                    <button
+                      className="delete"
+                      onClick={() => handleDelete(graduate)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+        </tbody>
+      </table>
     </div>
   );
 };
 
-export default BaiduMap;
+export default Admin;
