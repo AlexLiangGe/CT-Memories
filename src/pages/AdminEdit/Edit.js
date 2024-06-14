@@ -4,25 +4,23 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import "./index.css";
 
 const Edit = () => {
-  const { graduateId } = useParams(); // 使用useParams获取URL中的graduateId
+  const { graduateId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
   const initialGraduate = location.state?.graduate || {};
   const [graduate, setGraduate] = useState(initialGraduate);
   const handleChange = (e) => {
-    // 使用展开运算符复制graduate对象并更新对应字段的值
     setGraduate({ ...graduate, [e.target.id]: e.target.value });
   };
   const handleSubmit = (event) => {
-    event.preventDefault(); // 阻止表单默认提交行为
-    // 这里应该有提交编辑数据到服务器的逻辑
+    event.preventDefault();
     if (graduateId) {
       const data = JSON.parse(localStorage.getItem("cornellTechGraduates"));
       const idx = data.findIndex((item) => item.id === graduateId);
       data[idx] = graduate;
       localStorage.setItem("cornellTechGraduates", JSON.stringify(data));
-      alert("Edit Success!"); // 示例提示，实际应用中应替换为处理逻辑
-      navigate(-1); // 提交后返回上一页
+      alert("Edit Success!");
+      navigate(-1);
     } else {
       alert("Edit Fail!");
     }

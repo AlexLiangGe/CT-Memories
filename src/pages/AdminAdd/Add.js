@@ -8,8 +8,8 @@ const Add = () => {
   const navigate = useNavigate();
   const initialGraduate = location.state?.graduate || {};
   const [graduate, setGraduate] = useState(initialGraduate);
-  const [avatarPreview, setAvatarPreview] = useState(null); // 用于预览头像
-  const [avatarBase64, setAvatarBase64] = useState(null); // 存储头像的Base64编码
+  const [avatarPreview, setAvatarPreview] = useState(null);
+  const [avatarBase64, setAvatarBase64] = useState(null);
 
   const handleChange = (e) => {
     if (e.target.id === "avatar") {
@@ -27,15 +27,15 @@ const Add = () => {
     }
   };
   const handleSubmit = (event) => {
-    event.preventDefault(); // 阻止表单默认提交行为
+    event.preventDefault();
     const data = JSON.parse(localStorage.getItem("cornellTechGraduates"));
     const id = nanoid();
     graduate.id = id;
     graduate.avatar = avatarBase64;
     data.push(graduate);
     localStorage.setItem("cornellTechGraduates", JSON.stringify(data));
-    alert("Add Success!"); // 示例提示，实际应用中应替换为处理逻辑
-    navigate(-1); // 提交后返回上一页
+    alert("Add Success!");
+    navigate(-1);
   };
   return (
     <div className="main-box">

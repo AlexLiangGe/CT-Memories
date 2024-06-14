@@ -9,11 +9,10 @@ const BaiduMap = ({ ak, center, zoom }) => {
   let map = null;
   const [cornellTechGraduates, setCornellTechGraduates] = useState([]);
   useEffect(() => {
-    // 判断isLogin状态
     const isLogin = localStorage.getItem("isLogin") === "true";
     if (!isLogin) {
-      navigate("/login"); // 如果未登录，跳转至登录页面
-      return; // 确保后续代码不执行
+      navigate("/login");
+      return;
     }
 
     const storedData = localStorage.getItem("cornellTechGraduates");

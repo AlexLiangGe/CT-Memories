@@ -20,7 +20,7 @@ const Admin = () => {
       navigate("/login"); // 如果未登录，跳转至登录页面
       return; // 确保后续代码不执行
     }
-    
+
     const storedData = localStorage.getItem("cornellTechGraduates");
     if (storedData) {
       setCornellTechGraduates(JSON.parse(storedData));
@@ -170,7 +170,7 @@ const Admin = () => {
   return (
     <div className="main-box">
       <div className="title-box">
-        <a href="/">&larr; Back</a>
+        <a href="/">&larr; Back To Map</a>
         <div className="title">Cornell Tech Graduates</div>
         <div></div>
       </div>
